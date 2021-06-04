@@ -1,4 +1,8 @@
+import "dart:async";
 import "package:flutter/material.dart";
+import "package:permission_handler/permission_handler.dart";
+
+String _screenText = "Waiting for a sms message...";
 
 void main()async{
   runApp(MyApp());
@@ -17,37 +21,49 @@ class MyApp extends StatelessWidget{
           backgroundColor: Colors.orange
         )
       ),
-      home: AppHome()
+      home: SplashScreen()
     );
   }
 }
 
-class MyAppDeniedPerms extends StatelessWidget{
+class SplashScreen extends StatefulWidget{
+  @override
+  SplashScreenState createState() => SplashScreenState();
+}
+
+class SplashScreenState extends State<SplashScreen>{
+  @override
+  void initState(){
+    super.initState();
+    Future.delayed(Duration.zero, ()async => {
+      requestPermissions(context)
+    });
+  }
   @override
   Widget build(BuildContext context){
-    return Scaffold(
-        body: Center(
-            child:
-            Text("You need to have permissions enabled to use this app.")
-        )
+    return Container(
+      color: Colors.orange,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('resources/mango.png')
+          )
+        ),
+      )
     );
   }
 }
 
-class AppHome extends StatefulWidget{
+class MainPage extends StatefulWidget{
+  final displayText;
+  MainPage(this.displayText);
   @override
-  MyHomePageState createState() => MyHomePageState();
+  MainPageState createState() => MainPageState(displayText);
 }
 
-class AppHomeDeniedPerms extends StatelessWidget{
-  @override
-  Widget build(BuildContext context){
-    return Text("Permissions need to be enabled for this application.");
-  }
-}
-
-class MyHomePageState extends State<AppHome>{
-  String text = "Waiting for a message...";
+class MainPageState extends State<MainPage>{
+  final displayText;
+  MainPageState(this.displayText);
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -58,16 +74,28 @@ class MyHomePageState extends State<AppHome>{
       body: Center(
         child: Padding(
           padding: const EdgeInsets.only(
-            bottom: 100
+            bottom: 60
           ),
           child: Text.rich(
             TextSpan(
-              text: text,
-              style: TextStyle(fontWeight: FontWeight.normal, fontSize: 25)
+              text: displayText,
+              style: TextStyle(fontWeight: FontWeight.normal, fontSize: 15)
             )
           ),
         )
       )
     );
   }
+}
+
+Future requestPermissions(BuildContext context)async{
+  var isDenied = await Permission.sms.request().isDenied;
+  if(isDenied)
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) =>
+        MainPage("Permissions must be enabled to use this app.")));
+  else
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) =>
+        MainPage("Waiting for a sms message...")));
 }
