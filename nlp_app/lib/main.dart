@@ -33,7 +33,7 @@ class SplashScreenState extends State<SplashScreen>{
   @override
   void initState(){
     super.initState();
-    Future.delayed(Duration.zero, ()async => {
+    Future.delayed(Duration(seconds: 3), ()async => {
       requestPermissions(context)
     });
   }
