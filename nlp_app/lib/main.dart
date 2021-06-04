@@ -2,8 +2,6 @@ import "dart:async";
 import "package:flutter/material.dart";
 import "package:permission_handler/permission_handler.dart";
 
-String _screenText = "Waiting for a sms message...";
-
 void main()async{
   runApp(MyApp());
 }
