@@ -1,6 +1,7 @@
 import "dart:async";
 import "package:flutter/material.dart";
 import "package:permission_handler/permission_handler.dart";
+String _displayText = "placeholder";
 
 void main()async{
   runApp(MyApp());
@@ -53,15 +54,11 @@ class SplashScreenState extends State<SplashScreen>{
 }
 
 class MainPage extends StatefulWidget{
-  final displayText;
-  MainPage(this.displayText);
   @override
-  MainPageState createState() => MainPageState(displayText);
+  MainPageState createState() => MainPageState();
 }
 
 class MainPageState extends State<MainPage>{
-  final displayText;
-  MainPageState(this.displayText);
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -76,7 +73,7 @@ class MainPageState extends State<MainPage>{
           ),
           child: Text.rich(
             TextSpan(
-              text: displayText,
+              text: _displayText,
               style: TextStyle(fontWeight: FontWeight.normal, fontSize: 15)
             )
           ),
@@ -87,13 +84,12 @@ class MainPageState extends State<MainPage>{
 }
 
 Future requestPermissions(BuildContext context)async{
-  var isDenied = await Permission.sms.request().isDenied;
-  if(isDenied)
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) =>
-        MainPage("Permissions must be enabled to use this app.")));
+  await Permission.sms.request();
+  if(await Permission.sms.isDenied)
+    _displayText = "Permissions must be enabled to use this app.";
   else
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) =>
-        MainPage("Waiting for a sms message...")));
+    _displayText = "Waiting for a sms message...";
+  Navigator.push(
+      context, MaterialPageRoute(builder: (context) =>
+      MainPage()));
 }
