@@ -1,5 +1,6 @@
 import "dart:async";
 import "package:flutter/material.dart";
+import 'package:nlp_app/fetchSms.dart';
 import "package:permission_handler/permission_handler.dart";
 String _displayText = "placeholder";
 
@@ -47,7 +48,7 @@ class SplashScreenState extends State<SplashScreen>{
           image: DecorationImage(
             image: AssetImage('resources/mango.png')
           )
-        ),
+        )
       )
     );
   }
@@ -60,23 +61,38 @@ class MainPage extends StatefulWidget{
 
 class MainPageState extends State<MainPage>{
   @override
+  void initState() {
+    super.initState();
+    
+  }
+  @override
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text("NLP Text App")
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.only(
-            bottom: 60
-          ),
-          child: Text.rich(
-            TextSpan(
-              text: _displayText,
-              style: TextStyle(fontWeight: FontWeight.normal, fontSize: 15)
-            )
-          ),
+      body:
+      Center(
+        child: Container(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                    bottom: 60
+                ),
+                child: Text.rich(
+                    TextSpan(
+                        text: _displayText,
+                        style: TextStyle(fontWeight: FontWeight.normal, fontSize: 15)
+                    )
+                ),
+              ),
+              StreamBuilder<String>(
+                stream: ,
+              )
+            ]
+          )
         )
       )
     );
