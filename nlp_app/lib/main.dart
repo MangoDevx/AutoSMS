@@ -36,7 +36,7 @@ class SplashScreenState extends State<SplashScreen>{
   void initState(){
     super.initState();
     Future.delayed(Duration(seconds: 3), ()async => {
-      requestPermissions(context)
+      _requestPermissions(context)
     });
   }
   @override
@@ -60,10 +60,14 @@ class MainPage extends StatefulWidget{
 }
 
 class MainPageState extends State<MainPage>{
+  // TODO: Make stream work
+  Stream<String> _fetchSms() async*{
+    var sms = _fetchSmsLoop();
+  }
   @override
   void initState() {
     super.initState();
-    
+
   }
   @override
   Widget build(BuildContext context){
@@ -81,15 +85,15 @@ class MainPageState extends State<MainPage>{
                 padding: const EdgeInsets.only(
                     bottom: 60
                 ),
-                child: Text.rich(
-                    TextSpan(
-                        text: _displayText,
-                        style: TextStyle(fontWeight: FontWeight.normal, fontSize: 15)
-                    )
-                ),
-              ),
-              StreamBuilder<String>(
-                stream: ,
+                child: StreamBuilder(
+                    stream: _fetchSms(),
+                    builder: (context, snapshot){
+                      if(snapshot.connectionState == ConnectionState.waiting){
+                        return Text("Waiting for sms...");
+                      }
+                      return Text("$snapshot.data");
+                    }
+                )
               )
             ]
           )
@@ -99,7 +103,7 @@ class MainPageState extends State<MainPage>{
   }
 }
 
-Future requestPermissions(BuildContext context)async{
+Future _requestPermissions(BuildContext context)async{
   await Permission.sms.request();
   if(await Permission.sms.isDenied)
     _displayText = "Permissions must be enabled to use this app.";
@@ -108,4 +112,8 @@ Future requestPermissions(BuildContext context)async{
   Navigator.push(
       context, MaterialPageRoute(builder: (context) =>
       MainPage()));
+}
+
+Future<String> _fetchSmsLoop()async{
+  return "Not implemented.";
 }
