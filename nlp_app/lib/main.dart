@@ -2,7 +2,6 @@ import "dart:async";
 import "package:flutter/material.dart";
 import 'package:nlp_app/fetchSms.dart';
 import "package:permission_handler/permission_handler.dart";
-String _displayText = "placeholder";
 
 void main()async{
   runApp(MyApp());
@@ -60,9 +59,11 @@ class MainPage extends StatefulWidget{
 }
 
 class MainPageState extends State<MainPage>{
+  bool checkPerms = true;
   // TODO: Make stream work
   Stream<String> _fetchSms() async*{
-    var sms = _fetchSmsLoop();
+    var sms = await _fetchSmsLoop(checkPerms);
+    yield sms;
   }
   @override
   void initState() {
@@ -76,28 +77,25 @@ class MainPageState extends State<MainPage>{
         centerTitle: true,
         title: Text("NLP Text App")
       ),
-      body:
-      Center(
-        child: Container(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                    bottom: 60
-                ),
-                child: StreamBuilder(
-                    stream: _fetchSms(),
-                    builder: (context, snapshot){
-                      if(snapshot.connectionState == ConnectionState.waiting){
-                        return Text("Waiting for sms...");
-                      }
-                      return Text("$snapshot.data");
+      body: Container(
+          child: Padding(
+              padding: const EdgeInsets.only(
+                  bottom: 60,
+              ),
+              child: Center(
+              child: StreamBuilder(
+                  stream: _fetchSms(),
+                  builder: (context, snapshot){
+                    if(snapshot.connectionState == ConnectionState.waiting){
+                      return Text("Waiting for sms...", textAlign: TextAlign.center, style: TextStyle(fontSize: 25));
                     }
+                    if(snapshot.data != null)
+                      return Text(snapshot.data.toString(), textAlign: TextAlign.center, style: TextStyle(fontSize: 25));
+                    return Text("Error, no data found.", textAlign: TextAlign.center, style: TextStyle(fontSize: 25));
+                  }
                 )
               )
-            ]
           )
-        )
       )
     );
   }
@@ -105,15 +103,18 @@ class MainPageState extends State<MainPage>{
 
 Future _requestPermissions(BuildContext context)async{
   await Permission.sms.request();
-  if(await Permission.sms.isDenied)
-    _displayText = "Permissions must be enabled to use this app.";
-  else
-    _displayText = "Waiting for a sms message...";
   Navigator.push(
       context, MaterialPageRoute(builder: (context) =>
       MainPage()));
 }
 
-Future<String> _fetchSmsLoop()async{
-  return "Not implemented.";
+Future<String> _fetchSmsLoop(bool checkPerms)async{
+  if(checkPerms){
+    var status = await Permission.sms.status;
+    if(!status.isGranted)
+      return "You need to allow SMS permissions for this app to work. Current permission settings: $status";
+    checkPerms = true;
+  }
+  // TODO: "TODO: Make texts appear here, if not available send waiting message.
+  return "TODO: Make texts appear here, if not available send waiting message.";
 }
