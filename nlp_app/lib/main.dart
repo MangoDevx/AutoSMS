@@ -1,7 +1,8 @@
-import "dart:async";
-import "package:flutter/material.dart";
-import 'package:nlp_app/fetchSms.dart';
-import "package:permission_handler/permission_handler.dart";
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 void main()async{
   runApp(MyApp());
@@ -59,17 +60,7 @@ class MainPage extends StatefulWidget{
 }
 
 class MainPageState extends State<MainPage>{
-  bool checkPerms = true;
-  // TODO: Make stream work
-  Stream<String> _fetchSms() async*{
-    var sms = await _fetchSmsLoop(checkPerms);
-    yield sms;
-  }
-  @override
-  void initState() {
-    super.initState();
-
-  }
+  var channel = IOWebSocketChannel.connect('ws://192.168.1.8:6789');
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -78,26 +69,41 @@ class MainPageState extends State<MainPage>{
         title: Text("NLP Text App")
       ),
       body: Container(
-          child: Padding(
-              padding: const EdgeInsets.only(
+        child: Column(
+          children:[
+            Padding(
+                padding: const EdgeInsets.only(
                   bottom: 60,
-              ),
-              child: Center(
-              child: StreamBuilder(
-                  stream: _fetchSms(),
-                  builder: (context, snapshot){
-                    if(snapshot.connectionState == ConnectionState.waiting){
-                      return Text("Waiting for sms...", textAlign: TextAlign.center, style: TextStyle(fontSize: 25));
-                    }
-                    if(snapshot.data != null)
-                      return Text(snapshot.data.toString(), textAlign: TextAlign.center, style: TextStyle(fontSize: 25));
-                    return Text("Error, no data found.", textAlign: TextAlign.center, style: TextStyle(fontSize: 25));
-                  }
+                ),
+                child: Center(
+                    child: StreamBuilder(
+                        stream: channel.stream,
+                        builder: (context, snapshot){
+                          if(snapshot.connectionState == ConnectionState.waiting){
+                            return Text("Waiting for sms...", textAlign: TextAlign.center, style: TextStyle(fontSize: 25));
+                          }
+                          if(snapshot.data != null)
+                            return Text(snapshot.data.toString(), textAlign: TextAlign.center, style: TextStyle(fontSize: 25));
+                          return Text("Waiting for sms...", textAlign: TextAlign.center, style: TextStyle(fontSize: 25));
+                        }
+                    )
                 )
-              )
-          )
+            ),
+            FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: (){
+                _testWebSocketServer(channel);
+              },
+            )
+          ]
+        )
       )
     );
+  }
+  @override
+  void dispose(){
+    channel.sink.close();
+    super.dispose();
   }
 }
 
@@ -108,13 +114,12 @@ Future _requestPermissions(BuildContext context)async{
       MainPage()));
 }
 
-Future<String> _fetchSmsLoop(bool checkPerms)async{
-  if(checkPerms){
-    var status = await Permission.sms.status;
-    if(!status.isGranted)
-      return "You need to allow SMS permissions for this app to work. Current permission settings: $status";
-    checkPerms = true;
+void _testWebSocketServer(WebSocketChannel channel){
+  try{
+    channel.sink.add('Test');
+    print('sent add');
   }
-  // TODO: "TODO: Make texts appear here, if not available send waiting message.
-  return "TODO: Make texts appear here, if not available send waiting message.";
+  catch(e){
+    print(e);
+  }
 }
