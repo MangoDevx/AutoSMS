@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:web_socket_channel/io.dart';
@@ -82,9 +83,7 @@ class MainPageState extends State<MainPage>{
                           if(snapshot.connectionState == ConnectionState.waiting){
                             return Text("Waiting for sms...", textAlign: TextAlign.center, style: TextStyle(fontSize: 25));
                           }
-                          if(snapshot.data != null)
-                            return Text(snapshot.data.toString(), textAlign: TextAlign.center, style: TextStyle(fontSize: 25));
-                          return Text("Waiting for sms...", textAlign: TextAlign.center, style: TextStyle(fontSize: 25));
+                          return Text(snapshot.hasData ? '${snapshot.data}' : 'Waiting for data', textAlign: TextAlign.center, style: TextStyle(fontSize: 25) );
                         }
                     )
                 )
@@ -93,7 +92,9 @@ class MainPageState extends State<MainPage>{
               child: Icon(Icons.add),
               onPressed: (){
                 _testWebSocketServer(channel);
-              },
+                // I don't know why I have to reconnect every time but for some reason sink.add is killing the connection!
+                channel = IOWebSocketChannel.connect('ws://192.168.1.8:6789');
+              }
             )
           ]
         )
@@ -103,6 +104,7 @@ class MainPageState extends State<MainPage>{
   @override
   void dispose(){
     channel.sink.close();
+    print('Sink closed');
     super.dispose();
   }
 }
@@ -115,11 +117,6 @@ Future _requestPermissions(BuildContext context)async{
 }
 
 void _testWebSocketServer(WebSocketChannel channel){
-  try{
-    channel.sink.add('Test');
-    print('sent add');
-  }
-  catch(e){
-    print(e);
-  }
+  channel.sink.add('Sent phone msg');
+  print('sent add');
 }
