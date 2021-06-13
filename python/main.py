@@ -4,9 +4,10 @@ import asyncio
 import websockets
 
 async def server(websocket, path):
-    data = await websocket.recv()
-    print('Data received: '+data)
-    await websocket.send('Feed: '+data)
+    while True:
+        data = await websocket.recv()
+        print('Data received: '+data)
+        await websocket.send('Feed: '+data)
 
 ADDRESS = "192.168.1.8"
 socket_server = websockets.serve(server, ADDRESS, 6789)
