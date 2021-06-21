@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+final channel = IOWebSocketChannel.connect('ws://192.168.1.8:6789');
 
 void main()async{
   runApp(MyApp());
@@ -13,16 +14,16 @@ class MyApp extends StatelessWidget{
   @override
   Widget build(BuildContext context){
     return MaterialApp(
-      title: "NLP Text App",
-      theme: ThemeData(
-        primarySwatch: Colors.orange,
-        accentColor: Colors.greenAccent,
-        brightness: Brightness.dark,
-        appBarTheme: AppBarTheme(
-          backgroundColor: Colors.orange
-        )
-      ),
-      home: SplashScreen()
+        title: "NLP Text App",
+        theme: ThemeData(
+            primarySwatch: Colors.orange,
+            accentColor: Colors.greenAccent,
+            brightness: Brightness.dark,
+            appBarTheme: AppBarTheme(
+                backgroundColor: Colors.orange
+            )
+        ),
+        home: SplashScreen()
     );
   }
 }
@@ -43,14 +44,14 @@ class SplashScreenState extends State<SplashScreen>{
   @override
   Widget build(BuildContext context){
     return Container(
-      color: Colors.orange,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('resources/mango.png')
-          )
+        color: Colors.orange,
+        child: DecoratedBox(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('resources/mango.png')
+                )
+            )
         )
-      )
     );
   }
 }
@@ -61,18 +62,15 @@ class MainPage extends StatefulWidget{
 }
 
 class MainPageState extends State<MainPage>{
-  var channel = IOWebSocketChannel.connect('ws://192.168.1.8:6789');
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("NLP Text App")
-      ),
-      body: Container(
-        child: Column(
-          children:[
-            Padding(
+        appBar: AppBar(
+            centerTitle: true,
+            title: Text("NLP Text App")
+        ),
+        body: Container(
+            child: Padding(
                 padding: const EdgeInsets.only(
                   bottom: 60,
                 ),
@@ -83,22 +81,12 @@ class MainPageState extends State<MainPage>{
                           if(snapshot.connectionState == ConnectionState.waiting){
                             return Text("Waiting for sms...", textAlign: TextAlign.center, style: TextStyle(fontSize: 25));
                           }
-                          return Text(snapshot.hasData ? '${snapshot.data}' : 'Waiting for data', textAlign: TextAlign.center, style: TextStyle(fontSize: 25) );
+                          return Text(snapshot.hasData ? '${snapshot.data}' : 'No data returned yet', textAlign: TextAlign.center, style: TextStyle(fontSize: 25) );
                         }
                     )
                 )
-            ),
-            FloatingActionButton(
-              child: Icon(Icons.add),
-              onPressed: (){
-                _testWebSocketServer(channel);
-                // I don't know why I have to reconnect every time but for some reason sink.add is killing the connection!
-                channel = IOWebSocketChannel.connect('ws://192.168.1.8:6789');
-              }
             )
-          ]
         )
-      )
     );
   }
   @override
@@ -116,7 +104,6 @@ Future _requestPermissions(BuildContext context)async{
       MainPage()));
 }
 
-void _testWebSocketServer(WebSocketChannel channel){
-  channel.sink.add('Sent phone msg');
-  print('sent add');
+Future _getSmsData()async{
+
 }
