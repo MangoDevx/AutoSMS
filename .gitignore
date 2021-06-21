@@ -3,3 +3,4 @@
 python/chatbot/data.h5
 python/chatbot/classes.pkl
 python/chatbot/words.pkl
+python/chatbot/__pycache__/chatbot.cpython-39.pyc
