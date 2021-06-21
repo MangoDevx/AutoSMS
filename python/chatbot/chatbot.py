@@ -13,10 +13,10 @@ from nltk.tokenize import word_tokenize as TokenizeStr
 from tensorflow.keras.models import load_model
 
 WORD_LEMMATIZER = WordNetLemmatizer()
-INTENTS = json.loads(open('intents.json').read())
-WORDS = pickle.load(open('words.pkl', 'rb'))
-CLASSES = pickle.load(open('classes.pkl', 'rb'))
-MODEL = load_model('data.h5')
+INTENTS = json.loads(open('chatbot/intents.json').read())
+WORDS = pickle.load(open('chatbot/words.pkl', 'rb'))
+CLASSES = pickle.load(open('chatbot/classes.pkl', 'rb'))
+MODEL = load_model('chatbot/data.h5')
 
 def sentence_clean_up(sentence):
     sentence_words = TokenizeStr(sentence)
@@ -56,10 +56,7 @@ def get_response(intents_list, intents_json):
             break
     return result
 
-print('Chatbot connected')
-
-while True:
-    message = input('')
-    ints = predict_class(message)
-    res = get_response(ints, INTENTS)
-    print(f'Bot: {res}')
+def execute_chatbot(sentence):
+    ints = predict_class(sentence)
+    result = get_response(ints, INTENTS)
+    return result
