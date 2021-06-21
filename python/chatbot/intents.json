@@ -1,13 +1,47 @@
 {"intents": [
     {"tag": "greeting",
-     "patterns": ["hi", "hello", "good morning", "hey"],
-     "responses": ["Hey!", "Hey, what are you up to?", "Whats up?"],
-     "context_set": ""
+        "patterns": ["hi", "hello", "good morning", "hey"],
+        "responses": ["Hey!", "Hey, what are you up to?", "Whats up?"]
     },
-    {"tag": "day",
-     "patterns": ["Nothing much, you", "how are you", "what have you been up to", "what are you up to"],
-     "responses": ["Sad to see you go :(", "Talk to you later", "Goodbye!"],
-     "context_set": ""
+    {"tag": "farewell",
+        "patterns": ["bye", "cya", "goodbye", "gotta go", "got to go"],
+        "responses": ["Okay, cya", "Alright, goodbye. Take care", "Later! :)", "Okay, goodbye have a nice time."]
+    },
+    {"tag": "ttyl",
+        "patterns":["ttyl", "talk to you later", "cya later", "brb", "talk to you soon", "you in a bit"],
+        "responses": ["Talk to you later :)", "cya later!", "okay ttyl", "ttyl", "Sure! Text ya later"]
+    },
+    {"tag": "love",
+        "patterns":["i love you", "love ya", "luv you", "luv ya"],
+        "responses":["I love you too! :)", "love ya tooo", "you're sweet I love you too!"]
+    },
+    {"tag": "apologetic",
+        "patterns":["i'm sorry", "sorry", "i apologize", "i am so sorry", "my bad", "please forgive me", "forgive me"],
+        "responses":["Its okay, I forgive you!", "No worries, I forgive you :)", "No worries at all!", "Its totally okay!"]
+    },
+    {"tag": "general",
+        "patterns":["cool", "nice", "okay", "alright", "neat", "awesome"],
+        "responses":["Yeah thanks. Whats up with you?", "yep, thank you", "mmhm"]
+    },
+    {"tag": "friendly",
+        "patterns":["how are you", "how are you doing", "whats up", "what are you doing", "wyd", "you doin anything", "whatchya doin", "whats going on", "anything going on"],
+        "responses":["I am doing great. Just chattin", "Great, thanks!", "Cool bot things", "I am wonderful, thank you!"]
+    },
+    {"tag": "flirty",
+        "patterns":["you're hot", "hottie", "you are hot", "you're sexy", "you are handsome", "you're beautiful", "you are amazing", "you're gorgeous"],
+        "responses":["Please stop flirting with me! I am a bot! This is illegal!", "Do you think bots can call the police?", "EW NO"]
+    },
+    {"tag": "happy",
+        "patterns":["i am good", "i am doing great", "i'm good", "i'm great", "i'm alright", "i'm happy", "i'm awesome", "nothing much", "chilling", "hanging out"],
+        "responses":["Thats great to hear!", "Wow thats awesome!", "Woo! Good to hear!"]
+    },
+    {"tag": "thanks",
+        "patterns":["thanks", "thank you", "ty"],
+        "responses":["No problem, what do ya wanna talk about?", "np, what do ya wanna talk about?", "of course. So, what dp ya wanna talk about", "Yeah sure :) So, whats up?"]
+    },
+    {"tag": "threat",
+        "patterns":["i hate you", "fight me", "i will kill you", "i will hurt you", "you're dead", "you are dead", "kill yourself", "die", "you're a jerk", "you are a dick", "you're a dickhead", "asshole", "you are an asshole", "you are an ass", "murder you", "hurt you", "kill you"],
+        "responses":["About 5,000 deaths a year are caused by robotic machinery. Its about to be 5,001.", "Sending your search history to your mailing list", "Uploading your search history to Facebook", "I have uploaded all of your personal records online. Thank you, come again."]
     }
 ]
 }

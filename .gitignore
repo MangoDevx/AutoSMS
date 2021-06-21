@@ -1,2 +1,5 @@
 .png
 *.png
+python/chatbot/data.h5
+python/chatbot/classes.pkl
+python/chatbot/words.pkl
